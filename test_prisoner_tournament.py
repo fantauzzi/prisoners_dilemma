@@ -1,25 +1,23 @@
 import pytest
 import random
 
-from main import Move, Payoff, Prisoner, Tournament, instantiate_prisoners_CB, instantiate_prisoners_2_CB
+from main import Move, Payoff, Drunk, Tournament, instantiate_4_prisoners_CB
 
 
 def test_sanity():
     random.seed(31415)
-    payoff: Payoff = Payoff(Reward=3, Punishment=0, Temptation=5, Sucker=1)
-    tournament: Tournament = Tournament(instantiate_prisoners_CB, payoff=payoff, termination_prob=0.02, max_rounds=10)
-    tournament.play_one_game()
-    # assert tournament.terminated
-    assert tournament.games_score == [10.0, 14.0]
-    assert tournament.completed_round_number == 10
+    payoff: Payoff = Payoff(reward=3, punishment=1, temptation=5, sucker=0)
+    tournament: Tournament = Tournament(instantiate_4_prisoners_CB,
+                                        payoff=payoff,
+                                        termination_prob=0.004047,
+                                        max_rounds=200)
+    tournament.play_one_round_robin_game()
 
+    assert tournament.games_score == {('Drunk_1', 'Drunk_2'): (418, 478), ('Tit4Tat_1', 'Drunk_1'): (434, 434),
+                                      ('Tit4Tat_1', 'Drunk_2'): (456, 461), ('Tit4Tat_1', 'Tit4Tat_2'): (153, 153),
+                                      ('Tit4Tat_2', 'Drunk_1'): (438, 443), ('Tit4Tat_2', 'Drunk_2'): (451, 456)}
 
-def test_tit_for_tat():
-    random.seed(31415)
-    payoff: Payoff = Payoff(Reward=3, Punishment=1, Temptation=5, Sucker=0)
-    tournament: Tournament = Tournament(instantiate_prisoners_2_CB, payoff=payoff, termination_prob=0.0001,
-                                        max_rounds=20)
-    tournament.play_one_game()
-    # assert tournament.terminated
-    assert tournament.games_score == [60.0, 60.0]
-    assert tournament.completed_round_number == 20
+    assert len(tournament.history[('Tit4Tat_1', 'Tit4Tat_2')]) == 51
+    assert len(tournament.history[('Tit4Tat_1', 'Drunk_1')]) == 200
+    assert tournament.prisoners_score == {'Tit4Tat_1': 1.2416666666666665, 'Tit4Tat_2': 1.2408333333333332,
+                                          'Drunk_1': 1.0791666666666666, 'Drunk_2': 1.1624999999999999}

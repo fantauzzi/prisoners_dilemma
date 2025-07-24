@@ -1,5 +1,6 @@
 from __future__ import annotations
 from collections.abc import Callable
+from abc import ABC, abstractmethod
 from collections import defaultdict
 from itertools import combinations
 from enum import Enum, auto
@@ -19,10 +20,20 @@ class Payoff(NamedTuple):
     sucker: float
 
 
-class Prisoner:
+class Prisoner(ABC):
     def __init__(self, name: str) -> None:
         self.name: str = name
 
+    @abstractmethod
+    def choose_one_move(self,
+                        payoff: Payoff,
+                        termination_prob: float,
+                        history: list[Move],
+                        opponent_history: list[Move]) -> Move:
+        ...
+
+
+class Drunk(Prisoner):
     def choose_one_move(self,
                         payoff: Payoff,
                         termination_prob: float,
@@ -64,7 +75,7 @@ class Tournament:
             (Move.COOPERATE, Move.DEFECT): (self.payoff.sucker, self.payoff.temptation),
             (Move.DEFECT, Move.COOPERATE): (self.payoff.temptation, self.payoff.sucker)}
 
-    def play_one_move(self, prisoner1: Prisoner, prisoner2: Prisoner) -> tuple[tuple[Move, Move], tuple[float, float]]:
+    def play_one_move(self, prisoner1: Drunk, prisoner2: Drunk) -> tuple[tuple[Move, Move], tuple[float, float]]:
 
         prisoner1_history = [move for (move, _) in self.history[(prisoner1.name, prisoner2.name)]]
         prisoner2_history = [move for (_, move) in self.history[(prisoner1.name, prisoner2.name)]]
@@ -79,7 +90,7 @@ class Tournament:
         rewards: tuple[float, float] = self.moves_to_rewards[(move_1, move_2)]
         return (move_1, move_2), rewards
 
-    def play_one_vs_one_game(self, prisoner_1: Prisoner, prisoner_2: Prisoner) -> tuple[float, float]:
+    def play_one_vs_one_game(self, prisoner_1: Drunk, prisoner_2: Drunk) -> tuple[float, float]:
         assert self.games_score.get((prisoner_1.name, prisoner_2.name)) is None
         game_score_1, game_score_2 = 0, 0  # Init. the score for this game
         for _ in range(self.max_rounds):
@@ -99,23 +110,16 @@ class Tournament:
         for match in matches:  # Play the matches
             self.play_one_vs_one_game(self.prisoners[match[0]], self.prisoners[match[1]])
         # Calculate the overall score of each prisoner based on the scores after every game
+        # The overall score is per move and per game
         for prisoners, scores in self.games_score.items():
-            self.prisoners_score[prisoners[0]] += scores[0]
-            self.prisoners_score[prisoners[1]] += scores[1]
-
-
-def instantiate_prisoners_CB() -> tuple[Prisoner, ...]:
-    res: tuple[Prisoner, Prisoner] = (Prisoner("Gino"), Prisoner("Pilotino"))
-    return res
-
-
-def instantiate_prisoners_2_CB() -> tuple[Prisoner, ...]:
-    res: tuple[Prisoner, Prisoner] = (TitForTat("Gino"), TitForTat("Pilotino"))
-    return res
+            self.prisoners_score[prisoners[0]] += scores[0] / len(self.history[prisoners])
+            self.prisoners_score[prisoners[1]] += scores[1] / len(self.history[prisoners])
+        for prisoner, score in self.prisoners_score.items():
+            self.prisoners_score[prisoner] /= len(self.history)
 
 
 def instantiate_4_prisoners_CB() -> tuple[Prisoner, ...]:
-    res = (TitForTat('Tit4Tat_1'), TitForTat('Tit4Tat_2'), Prisoner('Random_1'), Prisoner('Random_2'))
+    res = (TitForTat('Tit4Tat_1'), TitForTat('Tit4Tat_2'), Drunk('Drunk_1'), Drunk('Drunk_2'))
     return res
 
 
@@ -124,15 +128,16 @@ def main() -> None:
     payoff: Payoff = Payoff(reward=3, punishment=1, temptation=5, sucker=0)
     tournament: Tournament = Tournament(instantiate_4_prisoners_CB,
                                         payoff=payoff,
-                                        termination_prob=1e-9,
+                                        termination_prob=0.004047,
                                         max_rounds=200)
+
     tournament.play_one_round_robin_game()
+
     for k, v in tournament.games_score.items():
         print(f'{k} : {v}')
     print()
     for k, v in tournament.prisoners_score.items():
         print(f'{k} : {v}')
-
 
 
 if __name__ == '__main__':
