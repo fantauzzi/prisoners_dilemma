@@ -42,6 +42,20 @@ class Prisoner:
         return my_move
 
 
+class TitForTat(Prisoner):
+    def choose_one_move(self,
+                        payoff: Payoff,
+                        termination_prob: float,
+                        prev_opponent_move: Move | None, ) -> Move:
+        if prev_opponent_move is not None:
+            self.log_opponent_move(prev_opponent_move)
+        assert len(self.my_moves) == len(self.opponent_moves)
+        my_move: Move = prev_opponent_move if prev_opponent_move is not None else Move.COOPERATE
+        self.log_my_move(my_move)
+
+        return my_move
+
+
 class Tournament:
     def __init__(self,
                  instantiate_prisoners_CB: Callable[[], tuple[Prisoner, ...]],
@@ -83,12 +97,14 @@ class Tournament:
         assert len(self.prisoners) == 2
         prev_move_1: Move | None = None
         prev_move_2: Move | None = None
-        while not self.terminated and self.completed_round_number < self.max_rounds:
+        while not self.terminated:
             prev_move_1, prev_move_2 = self.match(self.prisoners[0],
                                                   self.prisoners[1],
                                                   prev_move_1,
                                                   prev_move_2)
             self.completed_round_number += 1
+            if self.completed_round_number == self.max_rounds:
+                self.terminated = True
 
 
 def instantiate_prisoners_CB() -> tuple[Prisoner, Prisoner]:
@@ -96,10 +112,16 @@ def instantiate_prisoners_CB() -> tuple[Prisoner, Prisoner]:
     return res
 
 
+def instantiate_prisoners_2_CB() -> tuple[Prisoner, Prisoner]:
+    res: tuple[Prisoner, Prisoner] = (TitForTat("Gino"), TitForTat("Pilotino"))
+    return res
+
+
 def main() -> None:
     random.seed(31415)
-    payoff: Payoff = Payoff(Reward=3, Punishment=0, Temptation=5, Sucker=1)
-    tournament: Tournament = Tournament(instantiate_prisoners_CB, payoff=payoff, termination_prob=0.02, max_rounds=10)
+    payoff: Payoff = Payoff(Reward=3, Punishment=1, Temptation=5, Sucker=0)
+    tournament: Tournament = Tournament(instantiate_prisoners_2_CB, payoff=payoff, termination_prob=0.00000001,
+                                        max_rounds=1000000)
     tournament.play_one_game()
     print(tournament.scores)
     print(tournament.completed_round_number)
