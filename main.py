@@ -6,7 +6,6 @@ from itertools import combinations
 from enum import Enum, auto
 from typing import NamedTuple
 import random
-from unittest import case
 
 from tqdm import tqdm
 
@@ -156,6 +155,7 @@ def instantiate_4_prisoners_CB() -> tuple[Prisoner, ...]:
     res = (TitForTat('Tit4Tat_1'), TitForTat('Tit4Tat_2'), Drunk('Drunk_1'), Drunk('Drunk_2'))
     return res
 
+
 def instantiate_6_prisoners_CB() -> tuple[Prisoner, ...]:
     res = (TitForTat('Tit4Tat_1'),
            TitForTat('Tit4Tat_2'),
@@ -176,7 +176,7 @@ def main() -> None:
     tournament.play_one_round_robin_game(seed=31415)
 
     for k, v in tournament.games_score.items():
-        game_length =  len(tournament.history[k])
+        game_length = len(tournament.history[k])
         print(f'{k} : {v} after {game_length} turns')
     print()
     for k, v in tournament.prisoners_score.items():
