@@ -6,6 +6,9 @@ from itertools import combinations
 from enum import Enum, auto
 from typing import NamedTuple
 import random
+from unittest import case
+
+from tqdm import tqdm
 
 
 class Move(Enum):
@@ -53,6 +56,35 @@ class TitForTat(Prisoner):
         my_move = Move.COOPERATE if len(opponent_history) == 0 else opponent_history[-1]
 
         return my_move
+
+
+def classify_payoff(my_move: Move, opponent_move: Move) -> str:
+    match my_move:
+        case Move.COOPERATE:
+            return 'reward' if opponent_move == Move.COOPERATE else 'sucker'
+        case Move.DEFECT:
+            return 'temptation' if opponent_move == Move.COOPERATE else 'punishment'
+    assert False  # Shouldn't ever get here
+
+
+class WinStayLoseShift(Prisoner):
+    def choose_one_move(self,
+                        payoff: Payoff,
+                        termination_prob: float,
+                        history: list[Move],
+                        opponent_history: list[Move]) -> Move:
+
+        # First move always cooperate
+        if len(opponent_history) == 0:
+            return Move.COOPERATE
+
+        # The payoff of the previous turn was one of the best two for me (eitehr reward or temptation), then repeat
+        # that same move
+        payoff = classify_payoff(history[-1], opponent_history[-1])
+        if payoff in ('reward', 'tempation'):
+            return history[-1]
+        # Otherwise, switch to the other move
+        return Move.COOPERATE if history[-1] == Move.DEFECT else Move.DEFECT
 
 
 class Tournament:
@@ -103,11 +135,13 @@ class Tournament:
         self.games_score[(prisoner_1.name, prisoner_2.name)] = (game_score_1, game_score_2)
         return game_score_1, game_score_2
 
-    def play_one_round_robin_game(self) -> None:
+    def play_one_round_robin_game(self, seed=None) -> None:
+        if seed is not None:
+            random.seed(seed)
         n_prisoners = len(self.prisoners)
         # Make all pairs of integers from 0 to n_prisoners-1 included, where the first integer is < second integer
         matches = list(combinations(range(0, n_prisoners), 2))
-        for match in matches:  # Play the matches
+        for match in tqdm(matches):  # Play the matches
             self.play_one_vs_one_game(self.prisoners[match[0]], self.prisoners[match[1]])
         # Calculate the overall score of each prisoner based on the scores after every game
         # The overall score is per move and per game
@@ -122,19 +156,28 @@ def instantiate_4_prisoners_CB() -> tuple[Prisoner, ...]:
     res = (TitForTat('Tit4Tat_1'), TitForTat('Tit4Tat_2'), Drunk('Drunk_1'), Drunk('Drunk_2'))
     return res
 
+def instantiate_6_prisoners_CB() -> tuple[Prisoner, ...]:
+    res = (TitForTat('Tit4Tat_1'),
+           TitForTat('Tit4Tat_2'),
+           Drunk('Drunk_1'),
+           Drunk('Drunk_2'),
+           WinStayLoseShift('WSLS_1'),
+           WinStayLoseShift('WSLS_2'))
+    return res
+
 
 def main() -> None:
-    random.seed(31415)
     payoff: Payoff = Payoff(reward=3, punishment=1, temptation=5, sucker=0)
-    tournament: Tournament = Tournament(instantiate_4_prisoners_CB,
+    tournament: Tournament = Tournament(instantiate_6_prisoners_CB,
                                         payoff=payoff,
                                         termination_prob=0.004047,
                                         max_rounds=200)
 
-    tournament.play_one_round_robin_game()
+    tournament.play_one_round_robin_game(seed=31415)
 
     for k, v in tournament.games_score.items():
-        print(f'{k} : {v}')
+        game_length =  len(tournament.history[k])
+        print(f'{k} : {v} after {game_length} turns')
     print()
     for k, v in tournament.prisoners_score.items():
         print(f'{k} : {v}')
