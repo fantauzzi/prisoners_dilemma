@@ -92,7 +92,7 @@ class WinStayLoseShift(Prisoner):
         # The payoff of the previous turn was one of the best two for me (eitehr reward or temptation), then repeat
         # that same move
         payoff = classify_payoff(history[-1], opponent_history[-1])
-        if payoff in ('reward', 'tempation'):
+        if payoff in ('reward', 'temptation'):
             return history[-1]
         # Otherwise, switch to the other move
         return Move.COOPERATE if history[-1] == Move.DEFECT else Move.DEFECT
@@ -186,7 +186,6 @@ class Tournament:
             (Move.DEFECT, Move.COOPERATE): (self.payoff.temptation, self.payoff.sucker)}
 
     def play_one_move(self, prisoner1: Random, prisoner2: Random) -> tuple[tuple[Move, Move], tuple[float, float]]:
-
         prisoner1_history = [move for (move, _) in self.history[(prisoner1.name, prisoner2.name)]]
         prisoner2_history = [move for (_, move) in self.history[(prisoner1.name, prisoner2.name)]]
         move_1 = prisoner1.choose_one_move(self.payoff,
@@ -215,7 +214,7 @@ class Tournament:
         self.games_score[(prisoner_1.name, prisoner_2.name)] = (game_score_1, game_score_2)
         return game_score_1, game_score_2
 
-    def play_one_round_robin_game(self, seed=None) -> None:
+    def play_one_round_robin_tournament(self, seed=None) -> None:
         if seed is not None:
             random.seed(seed)
         n_prisoners = len(self.prisoners)
@@ -253,15 +252,25 @@ def instantiate_2_prisoners_CB() -> tuple[Prisoner, ...]:
     return res
 
 
+def instantiate_4_prisoners_with_AI_CB() -> tuple[Prisoner, ...]:
+    res = (TitForTat('Tit4Tat_1'),
+           OpenAI('gpt-4.1-nano_1', 'gpt-4.1-nano'),
+           OpenAI('gpt-4.1-nano_2', 'gpt-4.1-nano'),
+           OpenAI('gpt-4.1-nano_3', 'gpt-4.1-nano'),
+           OpenAI('gpt-4.1-nano_4', 'gpt-4.1-nano'),
+           Random('Ranodm_1'))
+    return res
+
+
 def main() -> None:
     payoff: Payoff = Payoff(reward=3, punishment=1, temptation=5, sucker=0)
-    tournament: Tournament = Tournament(instantiate_2_prisoners_CB,
+    tournament: Tournament = Tournament(instantiate_4_prisoners_with_AI_CB,
                                         payoff=payoff,
                                         # termination_prob=0.004047,
                                         termination_prob=0.0341,
                                         max_rounds=20)
 
-    tournament.play_one_round_robin_game(seed=31415)
+    tournament.play_one_round_robin_tournament(seed=31415)
 
     for k, v in tournament.games_score.items():
         game_length = len(tournament.history[k])

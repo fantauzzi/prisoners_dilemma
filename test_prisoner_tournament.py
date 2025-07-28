@@ -11,7 +11,7 @@ def test_sanity():
                                         payoff=payoff,
                                         termination_prob=0.004047,
                                         max_rounds=200)
-    tournament.play_one_round_robin_game(seed=31415)
+    tournament.play_one_round_robin_tournament(seed=31415)
 
     assert tournament.games_score == {('Drunk_1', 'Drunk_2'): (418, 478), ('Tit4Tat_1', 'Drunk_1'): (434, 434),
                                       ('Tit4Tat_1', 'Drunk_2'): (456, 461), ('Tit4Tat_1', 'Tit4Tat_2'): (153, 153),
@@ -30,7 +30,7 @@ def test_sanity2():
                                         payoff=payoff,
                                         termination_prob=0.004047,
                                         max_rounds=200)
-    tournament.play_one_round_robin_game(seed=31415)
+    tournament.play_one_round_robin_tournament(seed=31415)
 
     assert tournament.games_score == {('Drunk_1', 'Drunk_2'): (449, 474), ('Drunk_1', 'WSLS_1'): (458, 343),
                                       ('Drunk_1', 'WSLS_2'): (426, 291), ('Drunk_2', 'WSLS_1'): (12, 7),
