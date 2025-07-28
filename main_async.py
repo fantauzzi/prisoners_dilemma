@@ -109,9 +109,6 @@ def get_time_stamp() -> str:
 class OpenAI(Prisoner):
     def __init__(self, name: str, model_name: str) -> None:
         super().__init__(name)
-        # time_stamp = get_time_stamp()
-        # self.log_file_name = f'logs/log_{name}_{time_stamp}.txt'
-        # self.moves_count = 0
         self._llm_client = ChatOpenAI(openai_api_key=api_key,
                                       model_name=model_name,
                                       temperature=0.5,  # adjust for creativity (0.0–1.0)
@@ -151,8 +148,6 @@ class OpenAI(Prisoner):
         completion_tokens = response.usage_metadata.get('output_tokens', 'N/A')
         total_tokens = response.usage_metadata.get('total_tokens', 'N/A')
 
-        # self.moves_count += 1
-
         with open(log_file, 'a') as the_log:
             the_log.write(f'MOVES COUNT: {len(history) + 1}\n')
             the_log.write(f'TIME STAMP: {get_time_stamp()}\n')
@@ -162,24 +157,10 @@ class OpenAI(Prisoner):
             the_log.write('RESPONSE:\n')
             the_log.write(response.content + '\n-----------------------------------------------\n')
 
-        # Make file writing async too
-        # await asyncio.to_thread(self._write_log, prompt, response, prompt_tokens, completion_tokens, total_tokens)
-
         # Parse the decision from the last line
         decision = response.content.strip().splitlines()[-1].strip().upper()
         assert decision in ('C', 'D')
         return Move.COOPERATE if decision == 'C' else Move.DEFECT
-
-    """def _write_log(self, prompt: str, response, prompt_tokens, completion_tokens, total_tokens) -> None:
-        '''Helper method for synchronous file writing'''
-        with open(self.log_file_name, 'a') as the_log:
-            the_log.write(f'MOVES COUNT: {self.moves_count}\n')
-            the_log.write(f'TIME STAMP: {get_time_stamp()}\n')
-            the_log.write(f'PROMPT/COMPLETION/TOTAL TOKENS: {prompt_tokens}/{completion_tokens}/{total_tokens}\n')
-            the_log.write('PROMPT:\n')
-            the_log.write(prompt + '\n')
-            the_log.write('RESPONSE:\n')
-            the_log.write(response.content + '\n\n')"""
 
 
 class Match:
@@ -211,9 +192,6 @@ class Tournament:
         self.payoff = payoff
         self.termination_prob = termination_prob
         self.max_rounds = max_rounds
-        # self.games_score: dict[tuple[str, str], tuple[float, float]] = {}
-        # self.prisoners_score = defaultdict(float)
-        # self.history = defaultdict(list)
         self.scores = defaultdict(float)
         n_prisoners = len(self.prisoners)
         # Make all pairs of integers from 0 to n_prisoners-1 included, where the first integer is < second integer
@@ -228,8 +206,6 @@ class Tournament:
 
     async def play_one_move(self, match: Match) -> tuple[
         tuple[Move, Move], tuple[float, float]]:
-        # prisoner1_history = [move for (move, _) in match.history[(prisoner1.name, prisoner2.name)]]
-        # prisoner2_history = [move for (_, move) in self.history[(prisoner1.name, prisoner2.name)]]
 
         # Run both players' decision-making concurrently
         move_1_task = match.prisoner_1.choose_one_move(self.payoff,
@@ -250,25 +226,17 @@ class Tournament:
         return (move_1, move_2), rewards
 
     async def play_one_match(self, match: Match) -> list[float]:
-        # prisoner_1 = match.prisoner_1
-        # prisoner_2 = match.prisoner_2
         assert match.scores == [0, 0]
-        # assert self.games_score.get((prisoner_1.name, prisoner_2.name)) is None
-        # game_score_1, game_score_2 = 0, 0  # Init. the score for this game
         for _ in range(self.max_rounds):
             # Play one turn (Prisoners make a simultaneous move)
             (move_1, move_2), (move_1_reward, move_2_reward) = await self.play_one_move(match)
-            # self.history[(prisoner_1.name, prisoner_2.name)].append((move_1, move_2))
             # Update history and scores in the Match
             match.history[0].append(move_1)
             match.history[1].append(move_2)
             match.scores[0] += move_1_reward
             match.scores[1] += move_2_reward
-            # game_score_1 += move_score_1
-            # game_score_2 += move_score_2
             if random.random() < self.termination_prob:
                 break
-        # self.games_score[(prisoner_1.name, prisoner_2.name)] = (game_score_1, game_score_2)
         return match.scores
 
     def play_one_round_robin_tournament(self, seed=None, max_concurrent_games=32) -> None:
@@ -294,12 +262,6 @@ class Tournament:
             for match in self.matches:
                 self.scores[match.prisoner_1.name] += match.scores[0] / len(match.history[0])
                 self.scores[match.prisoner_2.name] += match.scores[1] / len(match.history[1])
-
-            """for prisoners, scores in self.games_score.items():
-                self.prisoners_score[prisoners[0]] += scores[0] / len(self.history[prisoners])
-                self.prisoners_score[prisoners[1]] += scores[1] / len(self.history[prisoners])
-            for prisoner, score in self.prisoners_score.items():
-                self.prisoners_score[prisoner] /= len(self.history)"""
 
         # Run the async tournament in a new event loop
         asyncio.run(_async_tournament())
@@ -345,9 +307,6 @@ def instantiate_4_prisoners_with_AI_CB() -> tuple[Prisoner, ...]:
 
 
 def main() -> None:
-    # Ensure logs directory exists
-    os.makedirs('logs', exist_ok=True)
-
     payoff: Payoff = Payoff(reward=3, punishment=1, temptation=5, sucker=0)
     tournament: Tournament = Tournament(instantiate_4_prisoners_with_AI_CB,
                                         payoff=payoff,
@@ -369,3 +328,14 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+
+# TODO
+
+"""
+In case of a bad answer from an LLM, handle it gracefully instead of crashing the whole match and tournament
+
+decision = response.content.strip().splitlines()[-1].strip().upper()
+assert decision in ('C', 'D')  # This will crash if LLM returns unexpected format
+return Move.COOPERATE if decision == 'C' else Move.DEFECT
+"""
+
