@@ -1,7 +1,7 @@
 import pytest
 import random
 
-from main import Move, Payoff, Drunk, Tournament, instantiate_4_prisoners_CB, instantiate_6_prisoners_CB
+from main import Move, Payoff, Random, Tournament, instantiate_4_prisoners_CB, instantiate_6_prisoners_CB
 
 
 def test_sanity():
