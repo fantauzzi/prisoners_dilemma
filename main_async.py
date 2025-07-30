@@ -15,9 +15,9 @@ from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage
 
 load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY")
-if not api_key:
-    raise ValueError("Please set the OPENAI_API_KEY environment variable.")
+# api_key = os.getenv("OPENAI_API_KEY")
+# if not api_key:
+#     raise ValueError("Please set the OPENAI_API_KEY environment variable.")
 
 max_API_call_attempts = 5
 
@@ -134,11 +134,21 @@ def get_time_stamp() -> str:
 
 class OpenAI(Prisoner):
     def __init__(self, name: str, model_name: str) -> None:
+        """
+        Note: o4-mini can use a couple of thousand tokens for its internal reasoning, which makes it even more expensive
+        :param name:
+        :param model_name:
+        """
+
         super().__init__(name)
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("Please set the OPENAI_API_KEY environment variable.")
+
         self._llm_client = ChatOpenAI(openai_api_key=api_key,
                                       model_name=model_name,
                                       temperature=1.,  # adjust for creativity (0.0–1.0)
-                                      max_tokens=4096)
+                                      max_tokens=5000)
 
     async def _choose_one_move(self,
                                payoff: Payoff,
@@ -183,10 +193,14 @@ class OpenAI(Prisoner):
             the_log.write(prompt + '\n')
             the_log.write('RESPONSE:\n')
             the_log.write(response.content + '\n')
-            # Parse the decision from the last line
-            decision = response.content.strip().splitlines()[-1].strip().upper()
+            # Parse the decision from the last line. If it raises an IndexError,
+            # then catch it and set the decision to ''
+            try:
+                decision = response.content.strip().splitlines()[-1].strip().upper()
+            except IndexError:
+                decision = None
             if decision not in ('C', 'D'):
-                the_log.write(f'ERROR IN PARSING DECISION: {decision}\n')
+                the_log.write(f'ERROR IN PARSING DECISION: `{decision}`\n')
             the_log.write('\n-----------------------------------------------\n')
 
         match decision:
