@@ -137,8 +137,8 @@ class OpenAI(Prisoner):
         super().__init__(name)
         self._llm_client = ChatOpenAI(openai_api_key=api_key,
                                       model_name=model_name,
-                                      temperature=0.5,  # adjust for creativity (0.0–1.0)
-                                      max_tokens=512)
+                                      temperature=1.,  # adjust for creativity (0.0–1.0)
+                                      max_tokens=4096)
 
     async def _choose_one_move(self,
                                payoff: Payoff,
@@ -356,9 +356,18 @@ def instantiate_4_prisoners_with_AI_CB() -> tuple[Prisoner, ...]:
     return res
 
 
+def instantiate_misc_models_CB() -> tuple[Prisoner, ...]:
+    res = (OpenAI('gpt-4.1-nano_1', 'gpt-4.1-nano'),
+           OpenAI('gpt-4o-mini_1', 'gpt-4o-mini'),
+           OpenAI('o4-mini_1', 'o4-mini'),
+           Random('Random_1'),
+           TitForTat('Tit4Tat_1'))
+    return res
+
+
 def main() -> None:
     payoff: Payoff = Payoff(reward=3, punishment=1, temptation=5, sucker=0)
-    tournament: Tournament = Tournament(instantiate_6_prisoners_with_AI_CB,
+    tournament: Tournament = Tournament(instantiate_misc_models_CB,
                                         payoff=payoff,
                                         termination_prob=0.0341,
                                         # termination_prob=0.06697,  # 0.0341 is for 20 rounds
@@ -378,3 +387,11 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+
+# TODO
+
+"""
+- Make the temperature and max token no. easily configurable by AI model
+- Load parameters from config. file
+
+"""
