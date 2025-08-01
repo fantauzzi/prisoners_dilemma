@@ -61,7 +61,7 @@ class TestTournament:
         test_config = OmegaConf.load('test_config.yaml')
 
         payoff = Payoff(reward=3, punishment=1, temptation=5, sucker=0)
-        return Tournament(payoff, test_config)
+        return Tournament(test_config)
 
     def test_tournament_initialization(self, simple_tournament):
         """Test Tournament initialization."""

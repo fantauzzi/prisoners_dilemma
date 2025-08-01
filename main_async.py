@@ -229,11 +229,13 @@ class Match:
 
 
 class Tournament:
-    def __init__(self,
-                 payoff: Payoff,
-                 config: DictConfig) -> None:
+    def __init__(self, config: DictConfig) -> None:
         # config_as_dict = OmegaConf.to_container(config, resolve=True)
         assert 0 <= config.common.termination_probability <= 1
+        payoff = Payoff(reward=config.common.payoff.reward,
+                        punishment=config.common.payoff.punishment,
+                        temptation=config.common.payoff.temptation,
+                        sucker=config.common.payoff.sucker)
 
         self.prisoners = []
         for prisoner in config.prisoners:
@@ -340,8 +342,7 @@ class Tournament:
 
 def main() -> None:
     config = OmegaConf.load(config_file)
-    payoff: Payoff = Payoff(reward=3, punishment=1, temptation=5, sucker=0)
-    tournament: Tournament = Tournament(payoff=payoff, config=config)
+    tournament: Tournament = Tournament(config=config)
 
     tournament.play_one_round_robin_tournament(seed=31415)
 
