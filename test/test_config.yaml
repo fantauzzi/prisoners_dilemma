@@ -1,0 +1,8 @@
+common:
+  termination_probability: 0.1
+  max_rounds: 10
+  max_API_call_attempts: 5
+  max_concurrent_matches: 32
+prisoners:
+  - { prisoner_class: 'TitForTat', params: { name: 'TFT1' } }
+  - { prisoner_class: 'TitForTat', params: { name: 'TFT2' } }

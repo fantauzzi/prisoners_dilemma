@@ -5,11 +5,14 @@ from unittest.mock import Mock, patch, AsyncMock
 import tempfile
 import os
 from collections import defaultdict
+from pathlib import Path
+
+from omegaconf import OmegaConf
 
 # Import all classes from your main module
 # Assuming your main file is named 'prisoners_dilemma.py'
 from main_async import Move, Payoff, Prisoner, Random as RandomPrisoner, TitForTat, \
-    WinStayLoseShift, OpenAI, Match, Tournament, classify_payoff
+    WinStayLoseShift, OpenAI, Match, Tournament, classify_payoff, get_time_stamp
 
 
 class TestMatch:
@@ -18,12 +21,15 @@ class TestMatch:
     @pytest.fixture
     def prisoners(self):
         """Create two test prisoners."""
-        return TitForTat("Player1"), RandomPrisoner("Player2")
+        log_dir = f'logs/{get_time_stamp()}'
+        Path(log_dir).mkdir(exist_ok=True)
+        return TitForTat("Player1"), RandomPrisoner("Player2"), log_dir
 
     def test_match_initialization(self, prisoners):
         """Test Match initialization."""
-        p1, p2 = prisoners
-        match = Match(p1, p2)
+
+        p1, p2, log_dir = prisoners
+        match = Match(p1, p2, log_dir=log_dir)
 
         # Should sort prisoners alphabetically by name
         assert match.prisoner_1.name == "Player1"
@@ -35,11 +41,11 @@ class TestMatch:
 
     def test_match_counter_increments(self, prisoners):
         """Test that match counter increments."""
-        p1, p2 = prisoners
+        p1, p2, log_dir = prisoners
         initial_counter = Match.counter
 
-        match1 = Match(p1, p2)
-        match2 = Match(p2, p1)
+        match1 = Match(p1, p2, log_dir=log_dir)
+        match2 = Match(p2, p1, log_dir=log_dir)
 
         assert match2.match_counter == match1.match_counter + 1
         assert Match.counter == initial_counter + 2
@@ -52,11 +58,10 @@ class TestTournament:
     def simple_tournament(self):
         """Create a simple tournament for testing."""
 
-        def prisoner_factory():
-            return (TitForTat("TFT1"), TitForTat("TFT2"))
+        test_config = OmegaConf.load('test_config.yaml')
 
         payoff = Payoff(reward=3, punishment=1, temptation=5, sucker=0)
-        return Tournament(prisoner_factory, payoff, 0.1, 10)
+        return Tournament(payoff, test_config)
 
     def test_tournament_initialization(self, simple_tournament):
         """Test Tournament initialization."""

@@ -7,18 +7,16 @@ from enum import Enum, auto
 from typing import NamedTuple
 import random
 import os
+from pathlib import Path
 from datetime import datetime
 import asyncio
 from tqdm.asyncio import tqdm
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage
+from omegaconf import OmegaConf, DictConfig
 
-load_dotenv()
-# api_key = os.getenv("OPENAI_API_KEY")
-# if not api_key:
-#     raise ValueError("Please set the OPENAI_API_KEY environment variable.")
-
+config_file = 'config.yaml'
 max_API_call_attempts = 5
 
 
@@ -32,6 +30,10 @@ class Payoff(NamedTuple):
     punishment: float
     temptation: float
     sucker: float
+
+
+def get_time_stamp() -> str:
+    return datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 
 class Prisoner(ABC):
@@ -128,12 +130,8 @@ class WinStayLoseShift(Prisoner):
         return Move.COOPERATE if history[-1] == Move.DEFECT else Move.DEFECT
 
 
-def get_time_stamp() -> str:
-    return datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-
-
 class OpenAI(Prisoner):
-    def __init__(self, name: str, model_name: str) -> None:
+    def __init__(self, name: str, model_name: str, temperature: float = 1.0, max_tokens=5000) -> None:
         """
         Note: o4-mini can use a couple of thousand tokens for its internal reasoning, which makes it even more expensive
         :param name:
@@ -141,14 +139,15 @@ class OpenAI(Prisoner):
         """
 
         super().__init__(name)
+        load_dotenv()
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
             raise ValueError("Please set the OPENAI_API_KEY environment variable.")
 
         self._llm_client = ChatOpenAI(openai_api_key=api_key,
                                       model_name=model_name,
-                                      temperature=1.,  # adjust for creativity (0.0–1.0)
-                                      max_tokens=5000)
+                                      temperature=temperature,
+                                      max_tokens=max_tokens)
 
     async def _choose_one_move(self,
                                payoff: Payoff,
@@ -215,7 +214,7 @@ class OpenAI(Prisoner):
 class Match:
     counter = 0
 
-    def __init__(self, prisoner: Prisoner, opponent: Prisoner) -> None:
+    def __init__(self, prisoner: Prisoner, opponent: Prisoner, log_dir: str) -> None:
         assert prisoner.name != opponent.name  # Prisoner names must be unique
         # Store the two Prisoners between self.prisoner_1 and self.prisoner_2 in alphabetical order by name
         self.prisoner_1, self.prisoner_2 = (prisoner, opponent) if prisoner.name < opponent.name else (opponent,
@@ -223,29 +222,37 @@ class Match:
         cls = type(self)
         cls.counter += 1
         self.match_counter = cls.counter
-        time_stamp = get_time_stamp()
-        self.log_files = [f'logs/log_{self.prisoner_1.name} match_{self.match_counter} {time_stamp}.txt',
-                          f'logs/log_{self.prisoner_2.name} match_{self.match_counter} {time_stamp}.txt']
+        self.log_files = [f'{log_dir}/{self.prisoner_1.name} match_{self.match_counter:04d}.txt',
+                          f'{log_dir}/{self.prisoner_2.name} match_{self.match_counter:04d}.txt']
         self.history = ([], [])
         self.scores = [0, 0]
 
 
 class Tournament:
     def __init__(self,
-                 instantiate_prisoners_CB: Callable[[], tuple[Prisoner, ...]],
                  payoff: Payoff,
-                 termination_prob: float,
-                 max_rounds: int) -> None:
-        assert 0 <= termination_prob <= 1
-        self.prisoners = instantiate_prisoners_CB()
+                 config: DictConfig) -> None:
+        # config_as_dict = OmegaConf.to_container(config, resolve=True)
+        assert 0 <= config.common.termination_probability <= 1
+
+        self.prisoners = []
+        for prisoner in config.prisoners:
+            prisoner = globals()[prisoner.prisoner_class](**prisoner.params)
+            self.prisoners.append(prisoner)
+
+        # self.prisoners = instantiate_prisoners_CB()
         self.payoff = payoff
-        self.termination_prob = termination_prob
-        self.max_rounds = max_rounds
+        self.termination_prob = config.common.termination_probability
+        self.max_rounds = config.common.max_rounds
+        self.log_dir = f'logs/{get_time_stamp()}'
+        Path(self.log_dir).mkdir(exist_ok=True)
         self.scores = defaultdict(float)
         n_prisoners = len(self.prisoners)
         # Make all pairs of integers from 0 to n_prisoners-1 included, where the first integer is < second integer
         self.matches_idx = list(combinations(range(0, n_prisoners), 2))
-        self.matches = [Match(self.prisoners[item[0]], self.prisoners[item[1]]) for item in self.matches_idx]
+        self.matches = [Match(self.prisoners[item[0]], self.prisoners[item[1]], self.log_dir) for item in
+                        self.matches_idx]
+        self.max_concurrent_matches = config.common.max_concurrent_matches
 
         self.moves_to_rewards: dict[tuple[Move, Move], tuple[float, float]] = {
             (Move.COOPERATE, Move.COOPERATE): (self.payoff.reward, self.payoff.reward),
@@ -299,13 +306,13 @@ class Tournament:
                     break
         return match.scores
 
-    def play_one_round_robin_tournament(self, seed=None, max_concurrent_games=32) -> None:
+    def play_one_round_robin_tournament(self, seed=None) -> None:
         async def _async_tournament():
             if seed is not None:
                 random.seed(seed)
 
             # Create a semaphore to limit concurrent games
-            semaphore = asyncio.Semaphore(max_concurrent_games)
+            semaphore = asyncio.Semaphore(self.max_concurrent_matches)
 
             async def play_game_with_semaphore(match):
                 async with semaphore:
@@ -331,63 +338,12 @@ class Tournament:
         asyncio.run(_async_tournament())
 
 
-def instantiate_4_prisoners_CB() -> tuple[Prisoner, ...]:
-    res = (TitForTat('Tit4Tat_1'), TitForTat('Tit4Tat_2'), Random('Drunk_1'), Random('Drunk_2'))
-    return res
-
-
-def instantiate_6_prisoners_CB() -> tuple[Prisoner, ...]:
-    res = (TitForTat('Tit4Tat_1'),
-           TitForTat('Tit4Tat_2'),
-           Random('Drunk_1'),
-           Random('Drunk_2'),
-           WinStayLoseShift('WSLS_1'),
-           WinStayLoseShift('WSLS_2'))
-    return res
-
-
-def instantiate_2_prisoners_CB() -> tuple[Prisoner, ...]:
-    res = (TitForTat('Tit4Tat_1'),
-           OpenAI('gpt-4o-mini_1', 'gpt-4o-mini'))  # Fixed model name
-    return res
-
-
-def instantiate_6_prisoners_with_AI_CB() -> tuple[Prisoner, ...]:
-    res = (TitForTat('Tit4Tat_1'),
-           OpenAI('gpt-4.1-nano_1', 'gpt-4.1-nano'),
-           OpenAI('gpt-4.1-nano_2', 'gpt-4.1-nano'),
-           OpenAI('gpt-4.1-nano_3', 'gpt-4.1-nano'),
-           OpenAI('gpt-4.1-nano_4', 'gpt-4.1-nano'),
-           Random('Random_1'))
-    return res
-
-
-def instantiate_4_prisoners_with_AI_CB() -> tuple[Prisoner, ...]:
-    res = (OpenAI('gpt-4.1-nano_1', 'gpt-4.1-nano'),
-           OpenAI('gpt-4.1-nano_2', 'gpt-4.1-nano'),
-           OpenAI('gpt-4.1-nano_3', 'gpt-4.1-nano'),
-           OpenAI('gpt-4.1-nano_4', 'gpt-4.1-nano'))
-    return res
-
-
-def instantiate_misc_models_CB() -> tuple[Prisoner, ...]:
-    res = (OpenAI('gpt-4.1-nano_1', 'gpt-4.1-nano'),
-           OpenAI('gpt-4o-mini_1', 'gpt-4o-mini'),
-           OpenAI('o4-mini_1', 'o4-mini'),
-           Random('Random_1'),
-           TitForTat('Tit4Tat_1'))
-    return res
-
-
 def main() -> None:
+    config = OmegaConf.load(config_file)
     payoff: Payoff = Payoff(reward=3, punishment=1, temptation=5, sucker=0)
-    tournament: Tournament = Tournament(instantiate_misc_models_CB,
-                                        payoff=payoff,
-                                        termination_prob=0.0341,
-                                        # termination_prob=0.06697,  # 0.0341 is for 20 rounds
-                                        max_rounds=20)
+    tournament: Tournament = Tournament(payoff=payoff, config=config)
 
-    tournament.play_one_round_robin_tournament(seed=31415, max_concurrent_games=16)
+    tournament.play_one_round_robin_tournament(seed=31415)
 
     print('\nTOURNAMENT MATCHES')
     for match in tournament.matches:
@@ -396,16 +352,8 @@ def main() -> None:
 
     print('\nPRISONERS AND THEIR NORMALIZED SCORE')
     for prisoner_name, score in tournament.scores.items():
-        print(prisoner_name, score)
+        print(f"{prisoner_name} {score:.3f}")
 
 
 if __name__ == '__main__':
     main()
-
-# TODO
-
-"""
-- Make the temperature and max token no. easily configurable by AI model
-- Load parameters from config. file
-
-"""
