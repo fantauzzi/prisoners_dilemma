@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="164ae7b6-6098-417b-9f72-406b06eec2cc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/main_async.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_async.py" afterDir="false" />
-    </list>
+    <list default="true" id="164ae7b6-6098-417b-9f72-406b06eec2cc" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -70,7 +68,7 @@
       <recent name="$PROJECT_DIR$/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main_async">
+  <component name="RunManager" selected="Python tests.pytest">
     <configuration name="main_async" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="prisoners_dilemma" />
       <option name="ENV_FILES" value="" />
@@ -222,7 +220,7 @@
       <workItem from="1753795655763" duration="7125000" />
       <workItem from="1753861433171" duration="11581000" />
       <workItem from="1753891529838" duration="6985000" />
-      <workItem from="1754039345903" duration="3493000" />
+      <workItem from="1754039345903" duration="3916000" />
     </task>
     <servers />
   </component>
@@ -245,13 +243,13 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_main_async_py.coverage" NAME="pytest in test_main_async.py Coverage Results" MODIFIED="1753862207989" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_WinStayLoseShift_py.coverage" NAME="pytest in test_WinStayLoseShift.py Coverage Results" MODIFIED="1753896292197" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest.coverage" NAME="pytest Coverage Results" MODIFIED="1754042612733" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest.coverage" NAME="pytest Coverage Results" MODIFIED="1754043184283" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_for_test_basics_TestMove.coverage" NAME="pytest for test_basics.TestMove Coverage Results" MODIFIED="1753896261863" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_basics_py.coverage" NAME="pytest in test_basics.py Coverage Results" MODIFIED="1753896270645" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_Random_py.coverage" NAME="pytest in test_Random.py Coverage Results" MODIFIED="1753896301850" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_match_and_tournament_py.coverage" NAME="pytest in test_match_and_tournament.py Coverage Results" MODIFIED="1754040765854" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_TitForTat_py.coverage" NAME="pytest in test_TitForTat.py Coverage Results" MODIFIED="1753896285202" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/prisoners_dilemma$main_async.coverage" NAME="main_async Coverage Results" MODIFIED="1754041948190" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/prisoners_dilemma$main_async.coverage" NAME="main_async Coverage Results" MODIFIED="1754042983759" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_WinStayLoseShif_py.coverage" NAME="pytest in test_WinStayLoseShif.py Coverage Results" MODIFIED="1753863266565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_OpenAI_py.coverage" NAME="pytest in test_OpenAI.py Coverage Results" MODIFIED="1753896315410" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
   </component>
