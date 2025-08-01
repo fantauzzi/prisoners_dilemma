@@ -9,4 +9,4 @@ prisoners:
   - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_1' } }
   - { prisoner_class: 'OpenAI', params: { name: 'gpt-4o-mini_1', model_name: 'gpt-4o-mini', temperature: 1, max_tokens: 500 } }
   - { prisoner_class: 'OpenAI', params: { name: 'gpt-4.1-nano_1', model_name: 'gpt-4.1-nano', temperature: 1, max_tokens: 500 } }
-  - { prisoner_class: 'OpenAI', params: { name: 'o4-mini_1', model_name: 'o4-mini', temperature: 1, max_tokens: 5000 } }
+# - { prisoner_class: 'OpenAI', params: { name: 'o4-mini_1', model_name: 'o4-mini', temperature: 1, max_tokens: 5000 } }
