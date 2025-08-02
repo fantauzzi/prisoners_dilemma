@@ -9,7 +9,7 @@ from collections import defaultdict
 # Import all classes from your main module
 # Assuming your main file is named 'prisoners_dilemma.py'
 from main_async import Move, Payoff, Prisoner, Random as RandomPrisoner, TitForTat, \
-    WinStayLoseShift, OpenAI, Match, Tournament, classify_payoff
+    WinStayLoseShift, LLM, Match, Tournament, classify_payoff
 
 
 class TestTitForTat:

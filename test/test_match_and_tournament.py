@@ -12,7 +12,7 @@ from omegaconf import OmegaConf
 # Import all classes from your main module
 # Assuming your main file is named 'prisoners_dilemma.py'
 from main_async import Move, Payoff, Prisoner, Random as RandomPrisoner, TitForTat, \
-    WinStayLoseShift, OpenAI, Match, Tournament, classify_payoff, get_time_stamp
+    WinStayLoseShift, LLM, Match, Tournament, classify_payoff, get_time_stamp
 
 
 class TestMatch:
