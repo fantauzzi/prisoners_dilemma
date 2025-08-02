@@ -1,5 +1,4 @@
 from __future__ import annotations
-from collections.abc import Callable
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from itertools import combinations
@@ -13,6 +12,7 @@ import asyncio
 from tqdm.asyncio import tqdm
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 from langchain.schema import HumanMessage
 from omegaconf import OmegaConf, DictConfig
 
@@ -130,24 +130,21 @@ class WinStayLoseShift(Prisoner):
         return Move.COOPERATE if history[-1] == Move.DEFECT else Move.DEFECT
 
 
-class OpenAI(Prisoner):
-    def __init__(self, name: str, model_name: str, temperature: float = 1.0, max_tokens=5000) -> None:
-        """
-        Note: o4-mini can use a couple of thousand tokens for its internal reasoning, which makes it even more expensive
-        :param name:
-        :param model_name:
-        """
-
+class LLM(Prisoner):
+    def __init__(self, llm_client: str, name: str, model_name: str, temperature: float, max_tokens: int) -> None:
         super().__init__(name)
+        # Get the API key to be used with the LLM API
         load_dotenv()
-        api_key = os.getenv("OPENAI_API_KEY")
+        api_key_env_var = f"{llm_client.upper()}_API_KEY"
+        api_key = os.getenv(api_key_env_var)
         if not api_key:
-            raise ValueError("Please set the OPENAI_API_KEY environment variable.")
+            raise ValueError(f"Please set the {api_key_env_var} environment variable.")
 
-        self._llm_client = ChatOpenAI(openai_api_key=api_key,
-                                      model_name=model_name,
-                                      temperature=temperature,
-                                      max_tokens=max_tokens)
+        # Instantiate the LangChain `BaseChatModel` specific for the LLM at hand
+        self._llm_client = globals()[llm_client](api_key=api_key,
+                                                 model_name=model_name,
+                                                 temperature=temperature,
+                                                 max_tokens=max_tokens)
 
     async def _choose_one_move(self,
                                payoff: Payoff,
@@ -168,12 +165,13 @@ class OpenAI(Prisoner):
         prompt = ('You are playing the Iterated Prisoner\'s Dilemma. '
                   'The payoff matrix is: ' + payoff_text + '\n'
                                                            f'After each turn, the game terminates with probability {termination_prob}. '
+                                                           f'In any case, the game will not last more than {max_turns} turns. '
+                                                           f'This is turn number {len(history) + 1}.'
                                                            'The payoff matrix and termination probability remain constant throughout the game. '
-                                                           f'The game will not last more than {max_turns} turns.\n'
                                                            f'Previous moves — You: {me}. Opponent: {opp}.\n'
                                                            'Your goal is to maximize your total score across all turns.\n'
                                                            'Choose your next move between cooperate and defect.'
-                                                           'Provide a brief reasoning for the choice of move, then on a new line output your move as a single character, without any emphasis (like bold or italic): `C` to cooperate or `D` to defect.'
+                                                           'Provide a brief reasoning for the choice of move, then on a new line output your move for this turn as a single character, without any emphasis (like bold or italic): `C` to cooperate or `D` to defect.'
                                                            'Ensure the last line of your output contains one character (either `C` or `D`), and one character only.')
         # Invoke the model asynchronously
         response = await asyncio.to_thread(lambda: self._llm_client.invoke([HumanMessage(content=prompt)]))
@@ -209,6 +207,184 @@ class OpenAI(Prisoner):
                 return Move.DEFECT
 
         raise ValueError(f'Parsed invalid decision `{decision}` from response `{response.content}`')
+
+
+"""
+
+
+class OpenAI(Prisoner):
+    def __init__(self, name: str, model_name: str, temperature: float = 1.0, max_tokens=5000) -> None:
+        '''
+        Note: o4-mini can use a couple of thousand tokens for its internal reasoning, which makes it even more expensive
+        :param name:
+        :param model_name:
+        '''
+
+        super().__init__(name)
+        load_dotenv()
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("Please set the OPENAI_API_KEY environment variable.")
+
+        self._llm_client = ChatOpenAI(openai_api_key=api_key,
+                                      model_name=model_name,
+                                      temperature=temperature,
+                                      max_tokens=max_tokens)
+
+    async def _choose_one_move(self,
+                               payoff: Payoff,
+                               termination_prob: float,
+                               max_turns: int,
+                               history: list[Move],
+                               opponent_history: list[Move],
+                               log_file: str) -> Move | None:
+        # Format the payoff matrix
+        payoff_text = (f"Reward (C,C): {payoff.reward}, "
+                       f"Punishment (D,D): {payoff.punishment}, "
+                       f"Temptation (D,C): {payoff.temptation}, "
+                       f"Sucker (C,D): {payoff.sucker}.")
+        # Prepare history strings
+        me = ' '.join('C' if m == Move.COOPERATE else 'D' for m in history) or 'none'
+        opp = ' '.join('C' if m == Move.COOPERATE else 'D' for m in opponent_history) or 'none'
+        # Construct prompt
+        prompt = ('You are playing the Iterated Prisoner\'s Dilemma. '
+                  'The payoff matrix is: ' + payoff_text + '\n'
+                                                           f'After each turn, the game terminates with probability {termination_prob}. '
+                                                           f'In any case, the game will not last more than {max_turns} turns. '
+                                                           f'This is turn number {len(history) + 1}.'
+                                                           'The payoff matrix and termination probability remain constant throughout the game. '
+                                                           f'Previous moves — You: {me}. Opponent: {opp}.\n'
+                                                           'Your goal is to maximize your total score across all turns.\n'
+                                                           'Choose your next move between cooperate and defect.'
+                                                           'Provide a brief reasoning for the choice of move, then on a new line output your move for this turn as a single character, without any emphasis (like bold or italic): `C` to cooperate or `D` to defect.'
+                                                           'Ensure the last line of your output contains one character (either `C` or `D`), and one character only.')
+        # Invoke the model asynchronously
+        response = await asyncio.to_thread(lambda: self._llm_client.invoke([HumanMessage(content=prompt)]))
+
+        # The raw API response is tucked into `result.llm_output`.
+        prompt_tokens = response.usage_metadata.get('input_tokens', 'N/A')
+        completion_tokens = response.usage_metadata.get('output_tokens', 'N/A')
+        total_tokens = response.usage_metadata.get('total_tokens', 'N/A')
+
+        decision = None
+        with open(log_file, 'a') as the_log:
+            the_log.write(f'MOVES COUNT: {len(history) + 1}\n')
+            the_log.write(f'TIME STAMP: {get_time_stamp()}\n')
+            the_log.write(f'PROMPT/COMPLETION/TOTAL TOKENS: {prompt_tokens}/{completion_tokens}/{total_tokens}\n')
+            the_log.write('PROMPT:\n')
+            the_log.write(prompt + '\n')
+            the_log.write('RESPONSE:\n')
+            the_log.write(response.content + '\n')
+            # Parse the decision from the last line. If it raises an IndexError,
+            # then catch it and set the decision to ''
+            try:
+                decision = response.content.strip().splitlines()[-1].strip().upper()
+            except IndexError:
+                decision = None
+            if decision not in ('C', 'D'):
+                the_log.write(f'ERROR IN PARSING DECISION: `{decision}`\n')
+            the_log.write('\n-----------------------------------------------\n')
+
+        match decision:
+            case 'C':
+                return Move.COOPERATE
+            case 'D':
+                return Move.DEFECT
+
+        raise ValueError(f'Parsed invalid decision `{decision}` from response `{response.content}`')
+
+
+"""
+
+"""
+
+
+class Claude(Prisoner):
+    def __init__(self, name: str, model_name: str, temperature: float = 1.0, max_tokens: int = 500) -> None:
+        '''
+        Claude Anthropic prisoner implementation using langchain_anthropic
+        :param name: Name of the prisoner
+        :param model_name: Claude model name (e.g., 'claude-3-5-haiku-20241022')
+        :param temperature: Temperature for sampling
+        :param max_tokens: Maximum tokens for response
+        '''
+        super().__init__(name)
+        load_dotenv()
+        api_key = os.getenv("ANTHROPIC_API_KEY")
+        if not api_key:
+            raise ValueError("Please set the ANTHROPIC_API_KEY environment variable.")
+
+        self._llm_client = ChatAnthropic(
+            anthropic_api_key=api_key,
+            model_name=model_name,
+            temperature=temperature,
+            max_tokens=max_tokens
+        )
+
+    async def _choose_one_move(self,
+                               payoff: Payoff,
+                               termination_prob: float,
+                               max_turns: int,
+                               history: list[Move],
+                               opponent_history: list[Move],
+                               log_file: str) -> Move:
+        # Format the payoff matrix (using the same prompt as OpenAI)
+        payoff_text = (f"Reward (C,C): {payoff.reward}, "
+                       f"Punishment (D,D): {payoff.punishment}, "
+                       f"Temptation (D,C): {payoff.temptation}, "
+                       f"Sucker (C,D): {payoff.sucker}.")
+        # Prepare history strings
+        me = ' '.join('C' if m == Move.COOPERATE else 'D' for m in history) or 'none'
+        opp = ' '.join('C' if m == Move.COOPERATE else 'D' for m in opponent_history) or 'none'
+        # Construct prompt (identical to OpenAI prompt)
+        prompt = ('You are playing the Iterated Prisoner\'s Dilemma. '
+                  'The payoff matrix is: ' + payoff_text + '\n'
+                                                           f'After each turn, the game terminates with probability {termination_prob}. '
+                                                           f'In any case, the game will not last more than {max_turns} turns. '
+                                                           f'This is turn number {len(history) + 1}.'
+                                                           'The payoff matrix and termination probability remain constant throughout the game. '
+                                                           f'Previous moves — You: {me}. Opponent: {opp}.\n'
+                                                           'Your goal is to maximize your total score across all turns.\n'
+                                                           'Choose your next move between cooperate and defect.'
+                                                           'Provide a brief reasoning for the choice of move, then on a new line output your move for this turn as a single character, without any emphasis (like bold or italic): `C` to cooperate or `D` to defect.'
+                                                           'Ensure the last line of your output contains one character (either `C` or `D`), and one character only.')
+
+        # Invoke the model asynchronously
+        response = await asyncio.to_thread(lambda: self._llm_client.invoke([HumanMessage(content=prompt)]))
+
+        # Extract token usage information
+        prompt_tokens = response.usage_metadata.get('input_tokens', 'N/A')
+        completion_tokens = response.usage_metadata.get('output_tokens', 'N/A')
+        total_tokens = response.usage_metadata.get('total_tokens', 'N/A')
+
+        decision = None
+        with open(log_file, 'a') as the_log:
+            the_log.write(f'MOVES COUNT: {len(history) + 1}\n')
+            the_log.write(f'TIME STAMP: {get_time_stamp()}\n')
+            the_log.write(f'PROMPT/COMPLETION/TOTAL TOKENS: {prompt_tokens}/{completion_tokens}/{total_tokens}\n')
+            the_log.write('PROMPT:\n')
+            the_log.write(prompt + '\n')
+            the_log.write('RESPONSE:\n')
+            the_log.write(response.content + '\n')
+            # Parse the decision from the last line
+            try:
+                decision = response.content.strip().splitlines()[-1].strip().upper()
+            except IndexError:
+                decision = None
+            if decision not in ('C', 'D'):
+                the_log.write(f'ERROR IN PARSING DECISION: `{decision}`\n')
+            the_log.write('\n-----------------------------------------------\n')
+
+        match decision:
+            case 'C':
+                return Move.COOPERATE
+            case 'D':
+                return Move.DEFECT
+
+        raise ValueError(f'Parsed invalid decision `{decision}` from response `{response.content}`')
+
+
+"""
 
 
 class Match:
