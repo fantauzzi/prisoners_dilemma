@@ -186,12 +186,13 @@ class LLM(Prisoner):
                   'The payoff matrix is: ' + payoff_text + '\n'
                                                            f'After each turn, the game terminates with probability {termination_prob}. '
                                                            f'In any case, the game will not last more than {max_turns} turns. '
-                                                           f'This is turn number {len(history) + 1}.'
+                                                           f'Turns are numbered starting from 1. This is turn number {len(history) + 1}.'
                                                            'The payoff matrix and termination probability remain constant throughout the game. '
                                                            f'Previous moves — You: {me}. Opponent: {opp}.\n'
                                                            'Your goal is to maximize your total score across all turns.\n'
-                                                           'Choose your next move between cooperate and defect.'
-                                                           'Provide a brief reasoning for the choice of move, then on a new line output your move for this turn as a single character, without any emphasis (like bold or italic): `C` to cooperate or `D` to defect.'
+                                                           'Your output must consist in two lines of text, without any markdown (like italic or bold)'
+                                                           'The first line must provide a brief reasoning for the choice of move.'
+                                                           'The second line must be a single upper-case character, with your move: `C` to cooperate or `D` to defect.'
                                                            'Ensure the last line of your output contains one character (either `C` or `D`), and one character only.')
         # Invoke the model asynchronously
         response = await self._llm_client.ainvoke([HumanMessage(content=prompt)])
