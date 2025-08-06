@@ -10,9 +10,11 @@ from pathlib import Path
 from datetime import datetime
 import asyncio
 from tqdm.asyncio import tqdm
+from omegaconf import OmegaConf, DictConfig
 from dotenv import load_dotenv
 from langchain.schema import HumanMessage
-from omegaconf import OmegaConf, DictConfig
+from langchain_openai import ChatOpenAI  # This is used by dynamic instantiation with globals()
+from langchain_anthropic import ChatAnthropic  # This is used by dynamic instantiation with globals()
 
 # To line profile:
 # kernprof -l -v  main_async.py
@@ -192,7 +194,7 @@ class LLM(Prisoner):
                                                            'Provide a brief reasoning for the choice of move, then on a new line output your move for this turn as a single character, without any emphasis (like bold or italic): `C` to cooperate or `D` to defect.'
                                                            'Ensure the last line of your output contains one character (either `C` or `D`), and one character only.')
         # Invoke the model asynchronously
-        response = await asyncio.to_thread(lambda: self._llm_client.invoke([HumanMessage(content=prompt)]))
+        response = await self._llm_client.ainvoke([HumanMessage(content=prompt)])
 
         # The raw API response is tucked into `result.llm_output`.
         prompt_tokens = response.usage_metadata.get('input_tokens', 'N/A')
@@ -408,3 +410,8 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+
+# TODO
+"""
+Unit-test, especially the scores and the determinism, with very small inputs
+"""

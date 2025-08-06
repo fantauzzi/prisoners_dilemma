@@ -1,21 +1,16 @@
 common:
   termination_probability: .0341
-  max_rounds: 20
+  max_rounds: 10
   max_API_call_attempts: 5
   max_concurrent_matches: 32
   payoff: { reward: 3, punishment: 1, temptation: 5, sucker: 0 }
-  n_rematches: 1000
+  n_rematches: 2
   seed: 31415
 prisoners:
   - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_1' } }
   - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_2' } }
-  - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_3' } }
-  - { prisoner_class: 'Random', params: { name: 'Random_1' } }
-  - { prisoner_class: 'Random', params: { name: 'Random_2' } }
   - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_1' } }
-  - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_2' } }
-  - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_3' } }
-unused:
+  - { prisoner_class: 'Random', params: { name: 'Random_1' } }
   - { prisoner_class: 'LLM', params: { llm_client: 'ChatOpenAI',
                                        name: 'gpt-4o-mini_1',
                                        model_name: 'gpt-4o-mini',
@@ -26,9 +21,18 @@ unused:
                                        model_name: 'gpt-4.1-nano',
                                        temperature: 1,
                                        max_tokens: 500 } }
+deterministic:
+  - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_1' } }
+  - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_2' } }
+  - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_3' } }
+  - { prisoner_class: 'Random', params: { name: 'Random_1' } }
+  - { prisoner_class: 'Random', params: { name: 'Random_2' } }
+  - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_1' } }
+  - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_2' } }
+  - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_3' } }
+anthropic:
   - { prisoner_class: 'LLM', params: { llm_client: 'ChatAnthropic',
                                        name: 'claude-haiku-3.5_1',
                                        model_name: 'claude-3-5-haiku-20241022',
                                        temperature: 1,
                                        max_tokens: 500 } }
-  - { prisoner_class: 'OpenAI', params: { name: 'o4-mini_1', model_name: 'o4-mini', temperature: 1, max_tokens: 5000 } }
