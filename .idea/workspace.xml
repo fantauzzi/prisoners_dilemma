@@ -4,7 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="164ae7b6-6098-417b-9f72-406b06eec2cc" name="Changes" comment="" />
+    <list default="true" id="164ae7b6-6098-417b-9f72-406b06eec2cc" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ipd.py" beforeDir="false" afterPath="$PROJECT_DIR$/ipd.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_LLM.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_llm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_Random.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_Random.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_TitForTat.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_TitForTat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_WinStayLoseShift.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_WinStayLoseShift.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_basics.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_basics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_match_and_tournament.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_match_and_tournament.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,39 +43,42 @@
     <option name="openDirectoriesWithSingleClick" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python tests.pytest for test_basics.TestMove.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest in test_LLM.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest in test_OpenAI.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest in test_Random.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest in test_TitForTat.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest in test_WinStayLoseShif.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest in test_WinStayLoseShift.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest in test_basics.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest in test_main_async.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest in test_match_and_tournament.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ipd.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main_async.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;SHELLCHECK.PATH&quot;: &quot;/home/fanta/.local/share/JetBrains/PyCharm2025.1/Shell Script/shellcheck&quot;,
-    &quot;Shell Script.clean.sh.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/fanta/workspace/prisoners_dilemma/main_async2.py&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;two.files.diff.last.used.file&quot;: &quot;/home/fanta/workspace/prisoners_dilemma/main_async2.py&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python tests.pytest for test_basics.TestMove.executor": "Run",
+    "Python tests.pytest for test_llm.TestLLM.executor": "Run",
+    "Python tests.pytest in test_LLM.py.executor": "Run",
+    "Python tests.pytest in test_OpenAI.py.executor": "Run",
+    "Python tests.pytest in test_Random.py.executor": "Run",
+    "Python tests.pytest in test_TitForTat.py.executor": "Run",
+    "Python tests.pytest in test_WinStayLoseShif.py.executor": "Run",
+    "Python tests.pytest in test_WinStayLoseShift.py.executor": "Run",
+    "Python tests.pytest in test_basics.py.executor": "Run",
+    "Python tests.pytest in test_llm.py.executor": "Run",
+    "Python tests.pytest in test_main_async.py.executor": "Run",
+    "Python tests.pytest in test_match_and_tournament.py.executor": "Run",
+    "Python tests.pytest.executor": "Run",
+    "Python.ipd.executor": "Run",
+    "Python.ipd_Sonnet.executor": "Run",
+    "Python.main_async.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SHELLCHECK.PATH": "/home/fanta/.local/share/JetBrains/PyCharm2025.1/Shell Script/shellcheck",
+    "Shell Script.clean.sh.executor": "Run",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/home/fanta/workspace/prisoners_dilemma/ipd_Sonnet.py",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "two.files.diff.last.used.file": "/home/fanta/workspace/prisoners_dilemma/ipd_Sonnet.py",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/test" />
@@ -73,43 +87,41 @@
       <recent name="$PROJECT_DIR$/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.ipd">
-    <configuration name="ipd" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python tests.pytest for test_llm.test_rate_limiter_registry_singleton">
+    <configuration name="pytest for test_llm.TestLLM" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="prisoners_dilemma" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ipd.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_llm.TestLLM&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="clean.sh" type="ShConfigurationType" temporary="true">
-      <option name="SCRIPT_TEXT" value="" />
-      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
-      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/clean.sh" />
-      <option name="SCRIPT_OPTIONS" value="" />
-      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
-      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
-      <option name="INTERPRETER_PATH" value="/bin/bash" />
+    <configuration name="pytest for test_llm.test_rate_limiter_registry_singleton" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="prisoners_dilemma" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="EXECUTE_IN_TERMINAL" value="true" />
-      <option name="EXECUTE_SCRIPT_FILE" value="true" />
-      <envs />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_llm.test_rate_limiter_registry_singleton&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <configuration name="pytest in test_WinStayLoseShift.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
@@ -130,7 +142,7 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest in test_basics.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="pytest in test_llm.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="prisoners_dilemma" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -144,7 +156,7 @@
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/test/test_basics.py&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/test/test_llm.py&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
@@ -185,20 +197,20 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.ipd" />
       <item itemvalue="Python tests.pytest" />
+      <item itemvalue="Python tests.pytest for test_llm.TestLLM" />
+      <item itemvalue="Python tests.pytest for test_llm.test_rate_limiter_registry_singleton" />
+      <item itemvalue="Python tests.pytest in test_llm.py" />
       <item itemvalue="Python tests.pytest in test_WinStayLoseShift.py" />
-      <item itemvalue="Python tests.pytest in test_basics.py" />
       <item itemvalue="Python tests.pytest in test_match_and_tournament.py" />
-      <item itemvalue="Shell Script.clean.sh" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.ipd" />
+        <item itemvalue="Python tests.pytest for test_llm.test_rate_limiter_registry_singleton" />
+        <item itemvalue="Python tests.pytest in test_llm.py" />
+        <item itemvalue="Python tests.pytest for test_llm.TestLLM" />
         <item itemvalue="Python tests.pytest in test_match_and_tournament.py" />
-        <item itemvalue="Python tests.pytest in test_basics.py" />
         <item itemvalue="Python tests.pytest in test_WinStayLoseShift.py" />
-        <item itemvalue="Shell Script.clean.sh" />
       </list>
     </recent_temporary>
   </component>
@@ -231,7 +243,10 @@
       <workItem from="1754384282890" duration="3221000" />
       <workItem from="1754400311480" duration="7909000" />
       <workItem from="1754469490156" duration="2456000" />
-      <workItem from="1754474375198" duration="1332000" />
+      <workItem from="1754474375198" duration="3756000" />
+      <workItem from="1754564110714" duration="1976000" />
+      <workItem from="1754641859885" duration="3033000" />
+      <workItem from="1754646588790" duration="3623000" />
     </task>
     <servers />
   </component>
@@ -247,8 +262,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/ipd.py</url>
-          <line>288</line>
-          <option name="timeStamp" value="10" />
+          <line>181</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -264,17 +279,19 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_main_async_py.coverage" NAME="pytest in test_main_async.py Coverage Results" MODIFIED="1753862207989" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_WinStayLoseShift_py.coverage" NAME="pytest in test_WinStayLoseShift.py Coverage Results" MODIFIED="1754141202479" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest.coverage" NAME="pytest Coverage Results" MODIFIED="1754141259508" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_Random_py.coverage" NAME="pytest in test_Random.py Coverage Results" MODIFIED="1754141151175" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/prisoners_dilemma$ipd.coverage" NAME="ipd Coverage Results" MODIFIED="1754474647300" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest.coverage" NAME="pytest Coverage Results" MODIFIED="1754641880816" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_WinStayLoseShift_py.coverage" NAME="pytest in test_WinStayLoseShift.py Coverage Results" MODIFIED="1754650701011" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/prisoners_dilemma$ipd_Sonnet.coverage" NAME="ipd_Sonnet Coverage Results" MODIFIED="1754642859035" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_Random_py.coverage" NAME="pytest in test_Random.py Coverage Results" MODIFIED="1754650669650" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/prisoners_dilemma$ipd.coverage" NAME="ipd Coverage Results" MODIFIED="1754645833034" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/prisoners_dilemma$main_async.coverage" NAME="ipd Coverage Results" MODIFIED="1754409820350" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_WinStayLoseShif_py.coverage" NAME="pytest in test_WinStayLoseShif.py Coverage Results" MODIFIED="1753863266565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_OpenAI_py.coverage" NAME="pytest in test_OpenAI.py Coverage Results" MODIFIED="1753896315410" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_for_test_llm_TestLLM.coverage" NAME="pytest for test_llm.TestLLM Coverage Results" MODIFIED="1754651951889" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_for_test_basics_TestMove.coverage" NAME="pytest for test_basics.TestMove Coverage Results" MODIFIED="1753896261863" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_basics_py.coverage" NAME="pytest in test_basics.py Coverage Results" MODIFIED="1754141226594" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_match_and_tournament_py.coverage" NAME="pytest in test_match_and_tournament.py Coverage Results" MODIFIED="1754141254614" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_TitForTat_py.coverage" NAME="pytest in test_TitForTat.py Coverage Results" MODIFIED="1754141172618" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_LLM_py.coverage" NAME="pytest in test_LLM.py Coverage Results" MODIFIED="1754141061922" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_basics_py.coverage" NAME="pytest in test_basics.py Coverage Results" MODIFIED="1754650645004" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_match_and_tournament_py.coverage" NAME="pytest in test_match_and_tournament.py Coverage Results" MODIFIED="1754651168352" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_TitForTat_py.coverage" NAME="pytest in test_TitForTat.py Coverage Results" MODIFIED="1754650696991" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/prisoners_dilemma$pytest_in_test_LLM_py.coverage" NAME="pytest in test_llm.py Coverage Results" MODIFIED="1754652141911" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
   </component>
 </project>

@@ -6,12 +6,13 @@ import tempfile
 import os
 from collections import defaultdict
 from pathlib import Path
+from dotenv import load_dotenv
 
 from omegaconf import OmegaConf
 
 # Import all classes from your main module
 # Assuming your main file is named 'prisoners_dilemma.py'
-from main_async import Move, Payoff, Prisoner, Random as RandomPrisoner, TitForTat, \
+from ipd import Move, Payoff, Prisoner, Random as RandomPrisoner, TitForTat, \
     WinStayLoseShift, LLM, Match, Tournament, classify_payoff, get_time_stamp
 
 
@@ -28,6 +29,7 @@ class TestMatch:
     def test_match_initialization(self, prisoners):
         """Test Match initialization."""
 
+        load_dotenv()
         p1, p2, log_dir = prisoners
         match = Match(p1, p2, log_dir=log_dir)
 
@@ -65,10 +67,9 @@ class TestTournament:
 
     def test_tournament_initialization(self, simple_tournament):
         """Test Tournament initialization."""
-        assert len(simple_tournament.prisoners) == 2
         assert simple_tournament.termination_prob == 0.1
         assert simple_tournament.max_rounds == 10
-        assert len(simple_tournament.matches) == 1  # C(2,2) = 1
+        assert len(simple_tournament.matches) == 6
         assert isinstance(simple_tournament.scores, defaultdict)
 
     def test_moves_to_rewards_mapping(self, simple_tournament):
@@ -111,7 +112,8 @@ class TestPrisonerErrorHandling:
                 max_turns=100,
                 history=[],
                 opponent_history=[],
-                log_file=log_file
+                log_file=log_file,
+                max_API_call_attempts=5
             )
             assert result is None  # Should return None after max attempts
         finally:

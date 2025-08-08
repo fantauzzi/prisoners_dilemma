@@ -1,9 +1,39 @@
 common:
   termination_probability: 0.1
   max_rounds: 10
-  max_API_call_attempts: 5
-  max_concurrent_matches: 32
-  payoff: { reward: 3, punishment: 1, temptation: 5, sucker: 0 }
+  max_API_call_attempts: 3
+  max_concurrent_matches: 4
+  payoff:
+    reward: 3
+    punishment: 1
+    temptation: 5
+    sucker: 0
+  n_rematches: 1
+  seed: 12345
+
 prisoners:
-  - { prisoner_class: 'TitForTat', params: { name: 'TFT1' } }
-  - { prisoner_class: 'TitForTat', params: { name: 'TFT2' } }
+  - prisoner_class: 'TitForTat'
+    params:
+      name: 'TitForTat_Test'
+
+  - prisoner_class: 'Random'
+    params:
+      name: 'Random_Test'
+
+  - prisoner_class: 'LLM'
+    params:
+      llm_client: 'ChatOpenAI'
+      name: 'GPT_Test'
+      model_name: 'gpt-4o-mini'
+      temperature: 0.7
+      max_tokens: 150
+      max_rate_per_minute: 60
+
+  - prisoner_class: 'LLM'
+    params:
+      llm_client: 'ChatAnthropic'
+      name: 'Claude_Test'
+      model_name: 'claude-3-5-haiku-20241022'
+      temperature: 1.0
+      max_tokens: 200
+      max_rate_per_minute: 30

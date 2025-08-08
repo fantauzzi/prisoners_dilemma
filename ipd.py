@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 from langchain.schema import HumanMessage
 from langchain_openai import ChatOpenAI  # This is used by dynamic instantiation with globals()
 from langchain_anthropic import ChatAnthropic  # This is used by dynamic instantiation with globals()
+from aiolimiter import AsyncLimiter
 
 # To line profile:
 # kernprof -l -v  main_async.py
@@ -145,20 +146,47 @@ class WinStayLoseShift(Prisoner):
         return Move.COOPERATE if history[-1] == Move.DEFECT else Move.DEFECT
 
 
+class RateLimiterRegistry:
+    """Registry to manage rate limiters for different LLM clients."""
+
+    def __init__(self):
+        self._limiters: dict[str, AsyncLimiter] = {}
+
+    def get_limiter(self, client_key: str, max_rate: int) -> AsyncLimiter:
+        """Get or create a rate limiter for the given client and rate."""
+        if client_key not in self._limiters:
+            # Create limiter with max_rate requests per 60 seconds (1 minute)
+            self._limiters[client_key] = AsyncLimiter(max_rate, 60)
+        return self._limiters[client_key]
+
+
+# Global rate limiter registry
+_rate_limiter_registry = RateLimiterRegistry()
+
+
 class LLM(Prisoner):
     def __init__(self,
                  llm_client: str,
                  name: str,
                  model_name: str,
-                 temperature: float, max_tokens: int,
+                 temperature: float,
+                 max_tokens: int,
+                 max_rate_per_minute: int = 9999,  # Default rate limit
                  seed: int = None) -> None:
         super().__init__(name, seed)
+
         # Get the API key to be used with the LLM API
-        load_dotenv()
+        # load_dotenv()
         api_key_env_var = f"{llm_client.upper()}_API_KEY"
         api_key = os.getenv(api_key_env_var)
         if not api_key:
             raise ValueError(f"Please set the {api_key_env_var} environment variable.")
+
+        # Store rate limiting info
+        self.llm_client = llm_client
+        self.max_rate_per_minute = max_rate_per_minute
+        # Create a unique key for this client/model combination
+        self.client_key = f"{llm_client}_{model_name}"
 
         # Instantiate the LangChain `BaseChatModel` specific for the LLM at hand
         self._llm_client = globals()[llm_client](api_key=api_key,
@@ -173,6 +201,10 @@ class LLM(Prisoner):
                                history: list[Move],
                                opponent_history: list[Move],
                                log_file: str) -> Move | None:
+
+        # Get the rate limiter for this client
+        limiter = _rate_limiter_registry.get_limiter(self.client_key, self.max_rate_per_minute)
+
         # Format the payoff matrix
         payoff_text = (f"Reward (C,C): {payoff.reward}, "
                        f"Punishment (D,D): {payoff.punishment}, "
@@ -194,8 +226,11 @@ class LLM(Prisoner):
                                                            'The first line must provide a brief reasoning for the choice of move.'
                                                            'The second line must be a single upper-case character, with your move: `C` to cooperate or `D` to defect.'
                                                            'Ensure the last line of your output contains one character (either `C` or `D`), and one character only.')
-        # Invoke the model asynchronously
-        response = await self._llm_client.ainvoke([HumanMessage(content=prompt)])
+
+        # Apply rate limiting before making the API call
+        async with limiter:
+            # Invoke the model asynchronously
+            response = await self._llm_client.ainvoke([HumanMessage(content=prompt)])
 
         # The raw API response is tucked into `result.llm_output`.
         prompt_tokens = response.usage_metadata.get('input_tokens', 'N/A')
@@ -206,6 +241,7 @@ class LLM(Prisoner):
         with open(log_file, 'a') as the_log:
             the_log.write(f'MOVES COUNT: {len(history) + 1}\n')
             the_log.write(f'TIME STAMP: {get_time_stamp()}\n')
+            the_log.write(f'RATE LIMIT: {self.max_rate_per_minute} req/min for {self.client_key}\n')
             the_log.write(f'PROMPT/COMPLETION/TOTAL TOKENS: {prompt_tokens}/{completion_tokens}/{total_tokens}\n')
             the_log.write('PROMPT:\n')
             the_log.write(prompt + '\n')
@@ -276,13 +312,15 @@ class Tournament:
         self.normalised_scores = defaultdict(float)
         self.max_concurrent_matches = config.common.max_concurrent_matches
         n_prisoners = len(config.prisoners)
+
+        ''' Set-up the matches between prisoners'''
         # Make all pairs of integers from 0 to n_prisoners-1 included, where the first integer is < second integer
         self.matches_idx = list(combinations(range(0, n_prisoners), 2))
         # Instantiate the matches, giving to each its own seed for its RNG
         self.matches = []
         config_as_dict: dict = OmegaConf.to_container(config, resolve=True)
         for i_rematch in range(self.n_rematches):
-            for item in self.matches_idx:
+            for item in self.matches_idx:  # item contains a pair with the indices of the respective prisoner configs
                 config_prisoner_1 = config_as_dict['prisoners'][item[0]]
                 config_prisoner_2 = config_as_dict['prisoners'][item[1]]
                 # Augment the parameters for the Prisoner ctor with the seed for RNG
@@ -410,9 +448,5 @@ def main() -> None:
 
 
 if __name__ == '__main__':
+    load_dotenv()
     main()
-
-# TODO
-"""
-Unit-test, especially the scores and the determinism, with very small inputs
-"""

@@ -21,6 +21,12 @@ prisoners:
                                        model_name: 'gpt-4.1-nano',
                                        temperature: 1,
                                        max_tokens: 500 } }
+  - { prisoner_class: 'LLM', params: { llm_client: 'ChatAnthropic',
+                                       name: 'claude-haiku-3.5_1',
+                                       model_name: 'claude-3-5-haiku-20241022',
+                                       max_rate_per_minute: 49,
+                                       temperature: 1,
+                                       max_tokens: 500 } }
 deterministic:
   - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_1' } }
   - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_2' } }
@@ -30,9 +36,3 @@ deterministic:
   - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_1' } }
   - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_2' } }
   - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_3' } }
-anthropic:
-  - { prisoner_class: 'LLM', params: { llm_client: 'ChatAnthropic',
-                                       name: 'claude-haiku-3.5_1',
-                                       model_name: 'claude-3-5-haiku-20241022',
-                                       temperature: 1,
-                                       max_tokens: 500 } }
