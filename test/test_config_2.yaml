@@ -1,0 +1,11 @@
+common:
+  termination_probability: .0
+  max_rounds: 20
+  max_API_call_attempts: 5
+  max_concurrent_matches: 32
+  payoff: { reward: 3, punishment: 1, temptation: 5, sucker: 0 }
+  n_rematches: 2
+  seed: 31415
+prisoners:
+  - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_1' } }
+  - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_2' } }
