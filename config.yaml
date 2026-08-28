@@ -7,6 +7,26 @@ common:
   n_rematches: 2
   seed: 31415
 prisoners:
+  - { prisoner_class: 'LLM', params: { llm_client: 'ChatOpenAI',
+                                       name: 'gpt-5-nano_1',
+                                       model_name: 'gpt-5-nano',
+                                       temperature: 1,
+                                       max_tokens: 500 } }
+  - { prisoner_class: 'LLM', params: { llm_client: 'ChatOpenAI',
+                                       name: 'gpt-5-nano_2',
+                                       model_name: 'gpt-5-nano',
+                                       temperature: 1,
+                                       max_tokens: 500 } }
+deterministic:
+  - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_1' } }
+  - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_2' } }
+  - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_3' } }
+  - { prisoner_class: 'Random', params: { name: 'Random_1' } }
+  - { prisoner_class: 'Random', params: { name: 'Random_2' } }
+  - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_1' } }
+  - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_2' } }
+  - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_3' } }
+removed:
   - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_1' } }
   - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_2' } }
   - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_1' } }
@@ -27,12 +47,3 @@ prisoners:
                                        max_rate_per_minute: 49,
                                        temperature: 1,
                                        max_tokens: 500 } }
-deterministic:
-  - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_1' } }
-  - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_2' } }
-  - { prisoner_class: 'TitForTat', params: { name: 'Tit4Tat_3' } }
-  - { prisoner_class: 'Random', params: { name: 'Random_1' } }
-  - { prisoner_class: 'Random', params: { name: 'Random_2' } }
-  - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_1' } }
-  - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_2' } }
-  - { prisoner_class: 'WinStayLoseShift', params: { name: 'WinStayLoseShift_3' } }

@@ -363,11 +363,11 @@ class Tournament:
         move_1, move_2 = await asyncio.gather(move_1_task, move_2_task)
 
         if move_1 is None or move_2 is None:
-            exc_msg = f'Error during match {match.match_counter}'
+            exc_msg = f'Error during match {match.match_counter}:'
             if move_1 is None:
-                exc_msg = f' Prisoner {match.prisoner_1.name} did not choose any move.'
+                exc_msg = exc_msg + f' Prisoner {match.prisoner_1.name} did not choose any move'
             if move_2 is None:
-                exc_msg = exc_msg + f' Prisoner {match.prisoner_2.name} did not choose any move.'
+                exc_msg = exc_msg + f' Prisoner {match.prisoner_2.name} did not choose any move'
             raise ValueError(exc_msg)
 
         rewards: tuple[float, float] = self.moves_to_rewards[(move_1, move_2)]
